@@ -20,6 +20,24 @@ const MeetupDetailsPage = (props) => {
   );
 };
 
+export const getStaticPaths = async () => {
+  const client = await MongoClient.connect(
+    "mongodb+srv://admin:JNbLkoH95HK6UXIF@cluster0.1q90f.mongodb.net/meetups?retryWrites=true&w=majority"
+  );
+
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups");
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+  client.close();
+
+  return {
+    paths: meetups.map((meetup) => ({
+      params: { meetupId: meetup._id.toString() },
+    })),
+    fallback: false,
+  };
+};
+
 export const getStaticProps = async (context) => {
   const meetupId = context.params.meetupId;
 
@@ -33,7 +51,6 @@ export const getStaticProps = async (context) => {
   const selectedMeetup = await meetupsCollection.findOne({
     _id: ObjectId(meetupId),
   });
-  console.log(selectedMeetup);
 
   client.close();
 
@@ -42,31 +59,11 @@ export const getStaticProps = async (context) => {
       meetupData: {
         id: selectedMeetup._id.toString(),
         title: selectedMeetup.title,
-        description: selectedMeetup.description,
         address: selectedMeetup.address,
         image: selectedMeetup.image,
+        description: selectedMeetup.description,
       },
     },
-  };
-};
-
-export const getStaticPaths = async () => {
-  const client = await MongoClient.connect(
-    "mongodb+srv://admin:JNbLkoH95HK6UXIF@cluster0.1q90f.mongodb.net/meetups?retryWrites=true&w=majority"
-  );
-
-  const db = client.db();
-  const meetupsCollection = db.collection("meetups");
-  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
-  client.close();
-
-  return {
-    paths: meetups.map((meetup) => ({
-      params: {
-        meetupId: meetup._id.toString(),
-      },
-    })),
-    fallback: false,
   };
 };
 
