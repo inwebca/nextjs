@@ -7,10 +7,7 @@ import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 const NewMeetupPage = () => {
   const router = useRouter();
   const addMeetupHandler = async (data) => {
-    const response = await axios.post("/api/new-meetup", data);
-    const dataResponse = await response.data;
-    console.log(dataResponse);
-
+    await axios.post("/api/new-meetup", data);
     router.replace("/");
   };
   return (
