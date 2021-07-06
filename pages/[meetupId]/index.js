@@ -7,8 +7,8 @@ const MeetupDetailsPage = (props) => {
   return (
     <Fragment>
       <Head>
-        <title>Meetups details {props.meetupData.title}</title>
-        <meta name="description" content={props.meetupData.description} />
+        <title>Meetups details</title>
+        <meta name="description" content="test" />
       </Head>
       <MeetupDetail
         image={props.meetupData.image}
